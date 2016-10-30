@@ -25,10 +25,12 @@ The firmware location is hard coded into the driver and is the same whether or n
 
 For Debian the non-free package firmware-realtek is available.
 
+For installation purposes it is now common to boot from an ISO on a USB and to install packages from a repository on the Internet. Without a working network driver for the Cube i9 it is necessary to use another newtork device, such as a WiFi to USB adapter, an ethernet to USB adapter or a mobile phone in tethered mode. The least troublesome method is to use an ethernet to USB adapter.
+
 From a terminal as non root user:
 
 ```
-git clone https://github.com/johnheenan/rtl8xxxu,git
+git clone https://github.com/johnheenan/rtl8xxxu.git
 cd rtl8xxxu
 make install
 
@@ -91,7 +93,7 @@ Known to work with more recent series kernels as of October 2016. Due to recent 
 
 # Alternatives and acknowledgements
 
-There ia an alternative working driver at https://github.com/lwfinger/rtl8723bu that is based on original manufactuer driver code by Realtek. The system name of this driver is 8723bu.
+There is an alternative working driver at https://github.com/lwfinger/rtl8723bu that is based on original manufactuer driver code by Realtek. The system name of this driver is 8723bu.
 
 This alternative working driver was very helpful in helping developing this fix.
 
