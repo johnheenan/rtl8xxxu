@@ -25,7 +25,7 @@ The firmware location is hard coded into the driver and is the same whether or n
 
 For Debian the non-free package firmware-realtek is available.
 
-For installation purposes it is now common to boot from an ISO on a USB and to install packages from a repository on the Internet. Without a working network driver for the Cube i9 it is necessary to use another newtork device, such as a WiFi to USB adapter, an ethernet to USB adapter or a mobile phone in tethered mode. The least troublesome method is to use an ethernet to USB adapter.
+For installation purposes it is now common to boot from an ISO on a thumb USB drive and to install packages from a repository on the Internet. Without a working network driver for the Cube i9 it is necessary to use another newtork device, such as a WiFi to USB adapter, an ethernet to USB adapter or a mobile phone in tethered mode. The least troublesome method is to use an ethernet to USB adapter.
 
 From a terminal as non root user:
 
