@@ -19,7 +19,7 @@ You need sudo, git, linux-headers and basic devlopment tools, such as base-devel
 You also need to check you have firmware at /lib/firmware/rtlwifi/rtl8723bu_nic.bin
 
 You can get the firmware from
-https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/rtlwifi/rtl8723bu_nic.bin
+https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/plain/rtlwifi/rtl8723bu_nic.bin
 
 The firmware location is hard coded into the driver and is the same whether or not bluetooth is used as well as WLAN. For this driver the firmware size used is 32108 bytes and is v35.0
 
@@ -60,9 +60,18 @@ The top line should have one of either 8723bu or rtl8xxxu in it. If none or both
 
 # What the patch does
 
-The patch works by forcing a fuller initialisation and forcing it to occur more often in code paths (such as occurs during a low level authentication).
+The rtl8723bu wireless IC shows evidence of a more agressive approach to power saving, powering down its RF side when there is no wireless interfacing but leaving USB interfacing intact. This makes the wireless IC more suitable for use in devices which need to keep their power use as low as practical, such as tablets and Surface Pro type devices.
 
-Due to the scant information available on the IC, the fix should be considered a temporary workaround until someone with access to full details of the IC may become involved in patching
+In effect this means that a full initialisation must be performed whenever a wireless interface is brought up. It also means that interpretations of power status from general wireless registers should not be relied on to influence an init sequence.
+
+The patch works by forcing a fuller initialisation and forcing it to occur more often in code paths (such as occurs during a low level authentication that initiates wireless interfacing).
+
+The initialisation sequence is now more consistent with code based directly on vendor code. For example while the vendor derived code interprets a register as indcating a particular powered state, it does not use this information to influence its init sequence.
+
+The rtl8723bu device has a unique USB VID and PID. This is taken advantage of for the patch to ensure only rtl8723bu devices are affected by this patch.
+
+With this patch wpa_supplicant reliably and consistently connects with an AP. Before a workaround such as executing rmmod and modprobe before each call to wpa_supplicant worked with some distributions.
+
 
 There are only two patched files
 * Makefile
