@@ -79,8 +79,6 @@ There are only two patched files
 
 The Makefile was edited to allow the kernel module to be built and installed outside of kernel source tree
 
-File rtl8xxxu_core.c had a number of small changes. One change was to move part of an initilisation sequence elsewhere (closer to where needed and potentially reoccuring more often) and the other was to ignore an apperently bogus result that was interpreted to mean a full initialisation was not necessary.
-
 File rtl8xxxu_8723b.c is relevant but was not patched
 
 None of the other three .c files are relevant to the Cube i9
