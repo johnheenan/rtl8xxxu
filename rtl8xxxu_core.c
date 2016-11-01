@@ -79,8 +79,6 @@ MODULE_PARM_DESC(dma_agg_pages, "Set DMA aggregation pages (range 1-127, 0 to di
 #define RTL8XXXU_TX_URB_LOW_WATER	25
 #define RTL8XXXU_TX_URB_HIGH_WATER	32
 
-#define USB_PRODUCT_ID_RTL8723BU 0xb720
-
 static int rtl8xxxu_submit_rx_urb(struct rtl8xxxu_priv *priv,
 				  struct rtl8xxxu_rx_urb *rx_urb);
 
@@ -3894,7 +3892,6 @@ static int rtl8xxxu_init_device(struct ieee80211_hw *hw)
 	u8 val8;
 	u16 val16;
 	u32 val32;
-  struct usb_device_descriptor *udesc = &priv->udev->descriptor;
 
 	/* Check if MAC is already powered on */
 	val8 = rtl8xxxu_read8(priv, REG_CR);
@@ -3903,9 +3900,7 @@ static int rtl8xxxu_init_device(struct ieee80211_hw *hw)
 	 * Fix 92DU-VC S3 hang with the reason is that secondary mac is not
 	 * initialized. First MAC returns 0xea, second MAC returns 0x00
 	 */
-	if (val8 == 0xea
-			|| (udesc->idVendor == USB_VENDOR_ID_REALTEK
-			&&  udesc->idProduct == USB_PRODUCT_ID_RTL8723BU))
+	if (val8 == 0xea || priv->fops == &rtl8723bu_fops)
 		macpower = false;
 	else
 		macpower = true;
@@ -5781,12 +5776,10 @@ static int rtl8xxxu_start(struct ieee80211_hw *hw)
 	struct rtl8xxxu_tx_urb *tx_urb;
 	unsigned long flags;
 	int ret, i;
-	struct usb_device_descriptor *udesc = &priv->udev->descriptor;
 
 	ret = 0;
 
-	if(udesc->idVendor == USB_VENDOR_ID_REALTEK
-			&& udesc->idProduct == USB_PRODUCT_ID_RTL8723BU) {
+	if(priv->fops == &rtl8723bu_fops) {
 		ret = rtl8xxxu_init_device(hw);
 		if (ret)
 			goto error_out;
@@ -6093,11 +6086,10 @@ static int rtl8xxxu_probe(struct usb_interface *interface,
 		goto exit;
 	}
 
-	if(!(id->idVendor == USB_VENDOR_ID_REALTEK
-			&& id->idProduct == USB_PRODUCT_ID_RTL8723BU)) {
+	if(priv->fops != &rtl8723bu_fops) {
 		ret = rtl8xxxu_init_device(hw);
 		if (ret)
-		goto exit;
+			goto exit;
 	}
 
 	hw->wiphy->max_scan_ssids = 1;
@@ -6207,7 +6199,7 @@ static struct usb_device_id dev_table[] = {
 /* Tested by Myckel Habets */
 {USB_DEVICE_AND_INTERFACE_INFO(0x2357, 0x0109, 0xff, 0xff, 0xff),
 	.driver_info = (unsigned long)&rtl8192eu_fops},
-{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_REALTEK, USB_PRODUCT_ID_RTL8723BU, 0xff, 0xff, 0xff),
+{USB_DEVICE_AND_INTERFACE_INFO(USB_VENDOR_ID_REALTEK, 0xb720, 0xff, 0xff, 0xff),
 	.driver_info = (unsigned long)&rtl8723bu_fops},
 #ifdef CONFIG_RTL8XXXU_UNTESTED
 /* Still supported by rtlwifi */

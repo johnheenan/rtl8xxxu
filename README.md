@@ -58,6 +58,9 @@ lsmod | grep usbcore
 The top line should have one of either 8723bu or rtl8xxxu in it. If none or both are in the line then this is incorrect.
 
 
+rtl8xxxu_ops
+has rtl8xxxu_start and rtl8xxxu_stop
+
 # What the patch does
 
 The rtl8723bu wireless IC shows evidence of a more agressive approach to power saving, powering down its RF side when there is no wireless interfacing but leaving USB interfacing intact. This makes the wireless IC more suitable for use in devices which need to keep their power use as low as practical, such as tablets and Surface Pro type devices.
@@ -68,7 +71,7 @@ The patch works by forcing a fuller initialisation and forcing it to occur more 
 
 The initialisation sequence is now more consistent with code based directly on vendor code. For example while the vendor derived code interprets a register as indcating a particular powered state, it does not use this information to influence its init sequence.
 
-The rtl8723bu device has a unique USB VID and PID. This is taken advantage of for the patch to ensure only rtl8723bu devices are affected by this patch.
+Only devices that use the rtl8723bu driver are affected by this patch.
 
 With this patch wpa_supplicant reliably and consistently connects with an AP. Before a workaround such as executing rmmod and modprobe before each call to wpa_supplicant worked with some distributions.
 
